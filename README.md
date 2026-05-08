@@ -35,7 +35,22 @@ GUBAD-code/
    - Trains a Random Forest classifier (100 trees, `minLeafPopulation=5`) per city
    - Classifies ISA and applies a mode filter (`Kernel.square(1.5)`)
    - Exports results to Google Drive as 30 m (2000–2015) or 10 m (2020–2025) GeoTIFFs
-
+3. `batch_ISA_to_builtup_constraint.py` — Batch conversion and post-processing of city-level built-up areas:
+   ▪ Loads city-level impervious surface / built-up area shapefiles and administrative boundary data
+   ▪ Automatically detects intersecting administrative districts for each city
+      - Supports manual selection of administrative districts to define the valid city extent
+      - Merges selected administrative units into a unified clipping boundary
+   ▪ Clips built-up area polygons by the selected administrative boundary
+      - Removes small fragmented patches smaller than 10,000 m²
+      - Dissolves remaining polygons and recalculates total built-up area
+   ▪ Applies temporal consistency constraints across multiple years
+      - Supports manual constraint rules, such as constraining earlier years by a later-year built-up extent
+      - Supports sequential constraints, where each period is constrained by the following period
+      - Supports no-constraint mode for direct copying and standardized output
+   ▪ Exports processed city-level built-up area shapefiles
+      - Saves intermediate clipped and merged results
+      - Saves final temporally constrained outputs with standardized filenames
+      - Records processing choices and completion status for breakpoint continuation
 **Dependencies:**
 - Python 3.8+
 - `earthengine-api`
